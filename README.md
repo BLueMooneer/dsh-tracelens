@@ -6,6 +6,10 @@ English | [中文](README.zh.md)
 
 DSH TraceLens is a visual execution explorer for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness). It turns the currently loaded Session into an interactive map of user input, model responses, Tool calls, system activity, failures, and per-call Token usage without adding another event store or changing the agent loop.
 
+TraceLens is built for developers who need to understand why an agent behaved the way it did. Follow the execution path as it grows, compare Token costs across model calls, and inspect the exact context behind any node from one navigable canvas.
+
+![DSH TraceLens execution map showing model calls, context nodes, details, and Token usage](docs/assets/tracelens-agent-map.png)
+
 ## Overview
 
 The **Agent Map** view sits beside the existing conversation views and updates as the Session runs. Five stable lanes separate Input, Model, Tool, System, and Error records. Select any node to inspect the data already recorded for that event, including message content, model request details, reasoning, Tool arguments and results, timing, errors, retries, and nested calls when available.

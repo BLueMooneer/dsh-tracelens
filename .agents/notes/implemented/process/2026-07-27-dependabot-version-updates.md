@@ -1,4 +1,4 @@
-# Agent Note: Dependabot version updates with a 30-day cooldown
+# Agent Note: Dependabot version-update policy
 
 Status: implemented
 
@@ -10,7 +10,7 @@ Maintained registry and GitHub Actions dependencies need a regular update path. 
 
 ## Decision
 
-The default branch carries [`.github/dependabot.yml`](../../../../.github/dependabot.yml) with weekly version-update checks for the root pnpm workspace, including `native/landlock-run`, the `python/sdk` uv project, and GitHub Actions. Every entry sets `cooldown.default-days` to `30`, so a version release becomes eligible only after it is at least 30 days old and is proposed on the next weekly check. The [in-repository Landlock release decision](2026-08-06-in-repository-landlock-release.md) owns the shared-workspace boundary.
+The default branch carries [`.github/dependabot.yml`](../../../../.github/dependabot.yml) for the root pnpm workspace, including `native/landlock-run`, the `python/sdk` uv project, and GitHub Actions. DSH TraceLens sets `open-pull-requests-limit` to `0` for every entry so the derivative repository does not create upstream maintenance pull requests. The retained schedules, labels, and 30-day cooldown form the ready-to-enable policy if automated version updates are adopted later. The [in-repository Landlock release decision](2026-08-06-in-repository-landlock-release.md) owns the shared-workspace boundary.
 
 The root pnpm version-update scan excludes `vendor/**`, whose source and manifests move only through the [vendoring procedure](../../../../vendor/README.md). GitHub applies `exclude-paths` only to version updates; a security pull request that touches a vendored manifest is replaced through the vendoring procedure instead of being merged as generated. Dependabot pull requests receive the repository's `kind/dependency` kind and `area/infra` area labels, run the normal pull-request checks, and remain subject to maintainer review; this automation does not merge them.
 
@@ -28,7 +28,7 @@ The pnpm entry keeps the unified workspace on its pinned pnpm 11 instead of intr
 
 ## Consequences
 
-- Routine dependency updates arrive in small reviewable pull requests after the quarantine instead of requiring periodic manual discovery.
-- A release normally appears between 30 and 36 days after publication because eligibility is evaluated weekly.
+- DSH TraceLens does not create routine Dependabot version-update pull requests; maintainers update dependencies deliberately.
+- Re-enabling an entry preserves the 30-day release-age quarantine and existing review labels.
 - Dependabot does not delay security proposals; repository checks can still block unrelated fresh transitives, and review preserves the vendoring boundary.
 - Maintainers still decide whether to merge each update and diagnose any provider limitation reported by the pnpm 11 update job.

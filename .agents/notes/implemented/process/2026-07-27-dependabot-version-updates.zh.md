@@ -1,4 +1,4 @@
-# Agent Note: Dependabot 版本更新采用 30 天冷却期
+# Agent Note: Dependabot 版本更新策略
 
 Status: implemented
 
@@ -10,7 +10,7 @@ Status: implemented
 
 ## 决策
 
-默认分支包含 [`.github/dependabot.yml`](../../../../.github/dependabot.yml)，其中为包含 `native/landlock-run` 的根 pnpm 工作区、`python/sdk` uv 项目和 GitHub Actions 配置了每周一次的版本更新检查。每个更新项都将 `cooldown.default-days` 设为 `30`，因此某个版本只有在发布至少 30 天后才符合更新条件，并会在下一次每周检查时生成更新提案。[仓库内 Landlock 发布决策](2026-08-06-in-repository-landlock-release.md)负责共享工作区边界。
+默认分支包含 [`.github/dependabot.yml`](../../../../.github/dependabot.yml)，覆盖包含 `native/landlock-run` 的根 pnpm 工作区、`python/sdk` uv 项目和 GitHub Actions。DSH TraceLens 为每个更新项将 `open-pull-requests-limit` 设为 `0`，使派生仓库不会创建上游维护所需的 PR。保留的计划、标签和 30 天冷却期构成可随时启用的策略，供将来采用自动版本更新时使用。[仓库内 Landlock 发布决策](2026-08-06-in-repository-landlock-release.md)负责共享工作区边界。
 
 根 pnpm 工作区的版本更新扫描排除 `vendor/**`，其中的源码和 manifest（元数据清单）只能通过 [vendoring 流程](../../../../vendor/README.md)变更。GitHub 仅将 `exclude-paths` 用于版本更新；如果安全更新 PR（Pull Request）涉及随源码纳入仓库的 manifest，则改由 vendoring 流程处理，以替代自动生成的 PR，而不会将其原样合并。Dependabot PR 会获得仓库的 `kind/dependency` 类型标签和 `area/infra` 区域标签，运行常规 PR 检查，并且仍须由维护者评审；该自动化不会合并这些 PR。
 
@@ -28,7 +28,7 @@ pnpm 更新项让统一工作区继续使用已固定的 pnpm 11，不会仅为�
 
 ## 后果
 
-- 隔离期结束后，常规依赖更新会以规模较小、便于评审的 PR 形式到达，无需维护者定期手动发现更新。
-- 由于每周评估一次更新资格，相应更新 PR 通常会在版本发布后 30 至 36 天出现。
+- DSH TraceLens 不会创建常规 Dependabot 版本更新 PR；维护者会有计划地更新依赖。
+- 重新启用任一更新项时，将继续采用 30 天版本发布隔离期和现有评审标签。
 - Dependabot 不会延迟安全更新提案；仓库检查仍可阻止无关的刚发布传递依赖，评审流程也会维持 vendoring 边界。
 - 维护者仍负责决定是否合并每项更新，并诊断 pnpm 11 更新任务报告的任何提供方限制。

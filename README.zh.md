@@ -6,6 +6,10 @@
 
 DSH TraceLens 是基于 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的可视化执行探索器。它把当前已加载的 Session 转换成交互式地图，集中呈现用户输入、模型回复、工具调用、系统活动、错误以及每次模型调用的 Token 用量，同时不引入第二套事件存储，也不修改 agent loop（智能体循环）。
 
+TraceLens 面向需要理解智能体为何产生某种行为的开发者。你可以在同一张可导航画布上跟随持续展开的执行路径、比较每次模型调用的 Token 成本，并检查任意节点背后的准确上下文。
+
+![DSH TraceLens 执行地图，展示模型调用、上下文节点、详情和 Token 用量](docs/assets/tracelens-agent-map.png)
+
 ## 项目概览
 
 **执行地图**位于现有会话视图旁边，并随着 Session 执行实时更新。五条固定泳道分别承载输入、模型、工具、系统和错误记录。选择任意节点即可检查该事件已经记录的数据，包括消息内容、模型请求详情、推理内容、工具参数与结果、耗时、错误、重试，以及存在时的嵌套调用。
