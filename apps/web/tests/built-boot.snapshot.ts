@@ -96,10 +96,27 @@ it('boots the built plugin graph and renders a fixture session end to end', asyn
     expect(webSearchRow.querySelector('[data-web]')).not.toBeNull()
   }, { timeout: 10_000 })
 
+  // Agent Map is a separate built client bundle in the shipped view ring. Its
+  // graph reads the same fixture Session through the standard snapshot hook,
+  // and selecting a recorded Tool node exposes the call-id-backed relation.
+  fireEvent.click(await screen.findByRole('tab', { name: 'Agent Map' }))
+  const mapGraph = await screen.findByRole('img', { name: 'Agent execution relationship graph' })
+  expect(mapGraph.contains(screen.getByText('Input'))).toBe(false)
+  const initialMapWidth = Number(mapGraph.getAttribute('width'))
+  fireEvent.click(screen.getByRole('button', { name: 'Zoom in' }))
+  expect(Number(mapGraph.getAttribute('width'))).toBeGreaterThan(initialMapWidth)
+  fireEvent.click(await screen.findByRole('button', { name: 'bash, Complete' }))
+  const mapDetails = await screen.findByRole('complementary', { name: 'Execution node details' })
+  expect(within(mapDetails).getAllByText('Tool call')).toHaveLength(1)
+  within(mapDetails).getByText('bash')
+  fireEvent.click(screen.getByRole('button', { name: 'Fit' }))
+  expect(Number(mapGraph.getAttribute('width'))).toBe(initialMapWidth)
+  within(mapDetails).getByText('bash')
+
   // Every bundle injected its plugin-owned style tag (the loader's CSS path).
   const styleOwners = [...document.head.querySelectorAll('style[data-plugin]')]
     .map(style => style.getAttribute('data-plugin'))
-  for (const plugin of ['@deepseek-ai/dsh-client-ui-layout', '@deepseek-ai/dsh-client-ui-sidebar', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-tool']) {
+  for (const plugin of ['@deepseek-ai/dsh-client-ui-layout', '@deepseek-ai/dsh-client-ui-sidebar', '@deepseek-ai/dsh-client-ui-conversation', '@deepseek-ai/dsh-client-ui-tool', '@deepseek-ai/dsh-client-ui-agent-map']) {
     expect(styleOwners).toContain(plugin)
   }
 })

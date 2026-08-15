@@ -273,6 +273,10 @@
     - id: ui-trajectory
       name: '@deepseek-ai/dsh-client-ui-trajectory'
 
+    # Interactive relationship graph derived from the loaded conversation projection.
+    - id: ui-agent-map
+      name: '@deepseek-ai/dsh-client-ui-agent-map'
+
 # ── the agent plane moves behind agent presets ─────────────────────────────
 #
 # Every row below composes what ONE agent contributes to the host registries:
